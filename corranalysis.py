@@ -53,4 +53,14 @@ plt.yticks(rotation=0, fontsize=8)
 plt.tight_layout()
 plt.show()
 
+# Find the strongest positive and negative correlations with target variable
+strongest_positive = target_corr.idxmax()
+strongest_negative = target_corr.idxmin()
 
+print(f"Strongest positive correlation with critical_temp: "
+      f"{strongest_positive} ({target_corr[strongest_positive]:.4f})"
+)
+
+print(f"Strongest negative correlation with critical_temp: "
+      f"{strongest_negative} ({target_corr[strongest_negative]:.4f})"
+)
