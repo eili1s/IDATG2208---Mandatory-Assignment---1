@@ -12,8 +12,27 @@ df = pd.concat([X, y], axis=1)
 print(df.shape)
 
 df.info()
+
+# summary statistics transposed
 summary = df.describe().T
-pd.set_option('display.max_columns', 100)
+
+# all features + target variable
 print(summary)
+
+# only features
+features_summary = summary.loc[X.columns]
+
+# highest variation features sorted by std
+highest_variation = features_summary.sort_values(
+    by="std",
+    ascending=False
+)
+
+print("Features with highest variation:\n",
+      highest_variation.head(10).to_string())
+
+print("\nTarget:")
+print(summary.loc[y.columns[0]])
+
 
 
