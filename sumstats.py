@@ -1,5 +1,7 @@
 from ucimlrepo import fetch_ucirepo
 import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
 # fetch dataset
 superconductivty_data = fetch_ucirepo(id=464)
@@ -35,4 +37,22 @@ print("\nTarget:")
 print(summary.loc[y.columns[0]])
 
 
+y["critical_temp"].hist(bins=50)
+plt.title("Distribution of critical_temp")
+plt.xlabel("critical_temp (Kelvin)")
+plt.ylabel("Frequency")
+plt.show()
 
+log_critical_temp = np.log(y["critical_temp"])
+
+log_critical_temp.hist(bins=50)
+plt.title("Distribution of log(critical_temp)")
+plt.xlabel("ln(critical_temp)")
+plt.ylabel("Frequency")
+plt.show()
+
+print("Raw skewness:",
+      round(y["critical_temp"].skew(), 4))
+
+print("Log skewness:",
+      round(np.log(y["critical_temp"]).skew(), 4))
