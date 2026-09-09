@@ -57,10 +57,36 @@ plt.show()
 strongest_positive = target_corr.idxmax()
 strongest_negative = target_corr.idxmin()
 
-print(f"Strongest positive correlation with critical_temp: "
+print(f"\nStrongest positive correlation with critical_temp: "
       f"{strongest_positive} ({target_corr[strongest_positive]:.4f})"
 )
 
 print(f"Strongest negative correlation with critical_temp: "
-      f"{strongest_negative} ({target_corr[strongest_negative]:.4f})"
+      f"{strongest_negative} ({target_corr[strongest_negative]:.4f})\n"
 )
+
+# Initialize empty list to store highly correlated feature pairs
+highly_corr_pairs = []
+
+for i in range (corr_matrix.shape[0]):
+    for j in range(i + 1, corr_matrix.shape[1]):
+        correlation_pair = corr_matrix.iloc[i, j] # Get correlation value for the pair of features
+
+        if abs(correlation_pair) > 0.9:
+            feature_1 = corr_matrix.columns[i]
+            feature_2 = corr_matrix.columns[j]
+
+            # Store the features with correlation above 0.9 in the list
+            highly_corr_pairs.append((feature_1, feature_2, correlation_pair))
+
+for feature_1, feature_2, correlation_pair in highly_corr_pairs[:10]:
+    print(
+        f"'{feature_1}' and '{feature_2}': " 
+        f"{correlation_pair:.4f}"
+    )
+
+
+
+
+
+
