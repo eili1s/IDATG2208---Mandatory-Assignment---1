@@ -1,25 +1,56 @@
 from ucimlrepo import fetch_ucirepo
 import pandas as pd
+import seaborn as sns
 import matplotlib.pyplot as plt
-import numpy as np
+
 
 # fetch dataset
-superconductivty_data = fetch_ucirepo(id=464)
+superconductivity_data = fetch_ucirepo(id=464)
 
 # data (as pandas dataframes)
-X = superconductivty_data.data.features
-y = superconductivty_data.data.targets
+X = superconductivity_data.data.features
+y = superconductivity_data.data.targets
 
 df = pd.concat([X, y], axis=1)
 print(df.shape)
 
 df.info()
 
-# summary statistics transposed
-summary = df.describe().T
+# Compute 81x81 correlation matrix for all features
+corr_matrix = X.corr()
 
-# all features + target variable
-print(summary)
+# Get correlation of all features with target variable
+target_corr = X.corrwith(y["critical_temp"])
 
-# only features
-features_summary = summary.loc[X.columns]
+# Find the top 15 features with the highest absolute correlation with target variable
+top_15_features = target_corr.abs().sort_values(
+    ascending=False
+).head(15).index
+
+
+# Create 15x15 correlation matrix for the top 15 features
+top_15_corr_matrix = corr_matrix.loc[top_15_features, top_15_features]
+
+plt.figure(figsize = (12, 8))
+
+
+sns.heatmap(
+    top_15_corr_matrix,
+    cmap="coolwarm", # Use diverging colormap to highlight variation
+    annot=True,
+    fmt=".2f",
+    center=0,
+    vmin=-1,
+    vmax=1,
+    square=True,
+    linewidths=.5,
+    annot_kws={"size": 8},
+)
+
+plt.title("Heatmap of the 15 Features Most Correlated with critical_temp")
+plt.xticks(rotation=45, ha="right", fontsize=8)
+plt.yticks(rotation=0, fontsize=8)
+plt.tight_layout()
+plt.show()
+
+
