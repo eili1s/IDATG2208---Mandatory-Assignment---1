@@ -85,7 +85,13 @@ for feature_1, feature_2, correlation_pair in highly_corr_pairs[:10]:
         f"{correlation_pair:.4f}"
     )
 
+# Find the feature with the weakest correlation with the target variable
+weak_predictor = target_corr.abs().idxmin()
+weak_corr = target_corr[weak_predictor]
 
+print(f"\nWeakest correlation with critical_temp: "
+        f"{weak_predictor} ({weak_corr:.4f})"
+)
 
 
 
