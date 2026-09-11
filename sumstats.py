@@ -43,11 +43,11 @@ plt.xlabel("critical_temp (Kelvin)")
 plt.ylabel("Frequency")
 plt.show()
 
-log_critical_temp = np.log(y["critical_temp"])
+log_critical_temp = np.log1p(y["critical_temp"])
 
 log_critical_temp.hist(bins=50)
-plt.title("Distribution of log(critical_temp)")
-plt.xlabel("ln(critical_temp)")
+plt.title("Distribution of log1p(critical_temp)")
+plt.xlabel("ln(1 + critical_temp)")
 plt.ylabel("Frequency")
 plt.show()
 
@@ -55,4 +55,4 @@ print("Raw skewness:",
       round(y["critical_temp"].skew(), 4))
 
 print("Log skewness:",
-      round(np.log(y["critical_temp"]).skew(), 4))
+      round(np.log1p(y["critical_temp"]).skew(), 4))
