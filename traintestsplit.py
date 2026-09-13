@@ -36,7 +36,7 @@ def batch_gradient_descent(X_train, y_train):
 
     return theta
 
-# feature evaluation function
+# linear regression evaluation function for a single feature
 def evaluate_feature(feature_name):
     # select predictor
     X_feature = X[[feature_name]].to_numpy()
@@ -45,6 +45,9 @@ def evaluate_feature(feature_name):
     k_fold = KFold(n_splits=5, shuffle=True, random_state=42)
 
     results = []
+
+    y_test_all = []
+    y_pred_all = []
 
     # repeat training and evaluation for each fold
     for fold, (train_indices, test_indices) in enumerate(k_fold.split(X_feature), start=1):
@@ -90,39 +93,38 @@ def evaluate_feature(feature_name):
             "test_r2": test_r2
         })
 
-    return pd.DataFrame(results)
+        y_test_all.append(y_test)
+        y_pred_all.append(y_test_pred)
+
+    y_test_all = np.vstack(y_test_all)
+    y_pred_all = np.vstack(y_pred_all)
+
+    return pd.DataFrame(results), y_test_all, y_pred_all
 
 # strong predictor evaluation
-strong_results = evaluate_feature("wtd_std_ThermalConductivity")
+strong_results, strong_actual, strong_pred = evaluate_feature("wtd_std_ThermalConductivity")
 
-print("\nStrong Predictor - wtd_std_ThermalConductivity:")
-print(strong_results)
+plt.figure(figsize=(12, 8))
 
-# weak predictor evaluation
-weak_results = evaluate_feature("gmean_fie")
+plt.scatter(
+    strong_actual.ravel(),
+    strong_pred.ravel(),
+    alpha=0.3
+)
 
-print("\nWeak Predictor - gmean_fie:")
-print(weak_results)
+plt.plot(
+    [-30, 190],
+    [-30, 190],
+    color='red',
+    linestyle='--',
+    label="Perfect prediction"
+)
 
-# test metrics used to compare model performance across folds
-metrics = [
-    "test_mse",
-    "test_rmse",
-    "test_r2",
-]
-
-# average performance
-print("\nStrong Predictor - Mean:")
-print(strong_results[metrics].mean())
-
-# variance in performance
-print("\nStrong Predictor - Variance:")
-print(strong_results[metrics].var())
-
-# average performance
-print("\nWeak Predictor - Mean:")
-print(weak_results[metrics].mean())
-
-# variance in performance
-print("\nWeak Predictor - Variance:")
-print(weak_results[metrics].var())
+plt.xlim(-30, 190)
+plt.ylim(-30, 190)
+plt.xlabel("Actual critical_temp (K)")
+plt.ylabel("Predicted critical_temp (K)")
+plt.title("Simple Linear Regression - Predicted vs Actual")
+plt.legend()
+plt.grid(alpha=0.3)
+plt.show()
